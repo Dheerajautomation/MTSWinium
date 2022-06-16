@@ -1,0 +1,7 @@
+Run('C:\Users\Automation\eclipse-workspace\MTSWinium\MaxProtctionexe\MaxProtection.exe')
+AutoItSetOption('MouseCoordMode',0)
+WinWait("Max Protection")
+WinActivate("Max Protection")
+MouseClick("left",229,172,1,0)
+Sleep(800)
+MouseClick("left",303,171,1,0)

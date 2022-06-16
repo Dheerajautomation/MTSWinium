@@ -1,0 +1,13 @@
+<classes>
+    <class name="test.IndividualMethodsTest">
+      <methods>
+        <include name="Allow_All_BlockWebsite" />
+      </methods>
+      <methods>
+        <include name="portblocker" />
+      </methods>
+      <methods>
+        <include name="Application_Rule" />
+      </methods>
+    </class>
+  </classes>
