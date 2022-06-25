@@ -1,5 +1,3 @@
-import static com.sun.jna.platform.win32.WinReg.HKEY_LOCAL_MACHINE;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -16,24 +14,18 @@ import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.winium.DesktopOptions;
 import org.openqa.selenium.winium.WiniumDriver;
-
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import com.sun.jna.platform.win32.Advapi32Util;
 
 public class Firewall {
 
@@ -43,6 +35,14 @@ public class Firewall {
 	String IPAddress="192.168.1.201";
 	String Application_RuleEXEName ="chrome.exe";
 	String sitetobeblocked="https://www.snapdeal.com";
+	Log ids;
+	Connection conn;   //for ids sql connection
+
+	/*--------------------------------------------------------------------------------------------------------------------
+	 * Module Name: Firewall Allow All Blocklist
+	 * Created By:-Dheeraj Prajapati
+	 * -------------------------------------------------------------------------------------------------------------------
+	 */
 	//@Test(priority = -1)
 	public void Allow_All_BlockWebsite() throws InterruptedException, IOException {
 		Log logger1=new Log("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\Logs\\Firewall\\Allow_All_BlockWebsite.txt");
@@ -65,12 +65,12 @@ public class Firewall {
 		driver.findElement(By.name("OK")).click();
 		logger1.logger.info("Successfully saved the Setting");
 		driver.close();
-		
+
 		Thread.sleep(2000);
 		wdriver = new ChromeDriver();
-		wdriver.manage().window().maximize(); 
-		wdriver.navigate().to(sitetobeblocked); 
-		
+		wdriver.manage().window().maximize();
+		wdriver.navigate().to(sitetobeblocked);
+
 		try {
 			String blocked = wdriver.findElement(By.xpath("//span[contains(text(),'This Content is blocked by')]")).getText();
 			System.out.println(blocked);
@@ -89,16 +89,16 @@ public class Firewall {
 			logger1.logger.info("#TEST CASE STATUS# :-FAILED");
 			wdriver.close();
 		}
-	
+
 		wdriver.close();
 		wdriver.quit();
-		
+
 		Allow_All_BlockWebsite_Remove();
 		logger1.logger.info("Running Allow_All_BlockWebsite_Remove Function ");
 		wdriver = new ChromeDriver();
-		wdriver.manage().window().maximize(); 
-		wdriver.navigate().to(sitetobeblocked); 
-		
+		wdriver.manage().window().maximize();
+		wdriver.navigate().to(sitetobeblocked);
+
 		try {
 			String blocked = wdriver.findElement(By.xpath("//span[contains(text(),'This Content is blocked by')]")).getText();
 			System.out.println(blocked);
@@ -108,7 +108,7 @@ public class Firewall {
 			logger1.logger.info("Website "+sitetobeblocked +"\tis Sucessfully Blocked By Antivirus");
 			logger1.logger.info("#TEST CASE STATUS# :- FAILED");
 			logger1.loggerhandleclose();
-			
+
 		}
 		catch(Exception e)
 		{
@@ -120,22 +120,22 @@ public class Firewall {
 			logger1.loggerhandleclose();
 			wdriver.close();
 		}
-		
+
 		wdriver.close();
 		wdriver.quit();
-		
+
 		Thread.sleep(2000);
 		driver.close();
-		
+
 	}
 
-	
+
 	public void Allow_All_BlockWebsite_Remove() throws IOException {
-		
-	
+
+
 		DesktopOptions option = new DesktopOptions();
 		option.setApplicationPath("C:\\Program Files\\Max Secure Total Security\\MaxSDUI.exe");
-		WiniumDriver driver=new WiniumDriver(new URL("http://localhost:9999"),option);	
+		WiniumDriver driver=new WiniumDriver(new URL("http://localhost:9999"),option);
 		driver.findElement(By.name("Protection Center")).click();
 		driver.findElement(By.name("Blocked List")).click();
 		driver.findElement(By.id("5142")).click();
@@ -144,15 +144,19 @@ public class Firewall {
 		driver.findElement(By.name("Save")).click();
 		driver.findElement(By.name("OK")).click();
 		driver.close();
-		
+
 	}
-	
+	/*--------------------------------------------------------------------------------------------------------------------
+	 * Module Name: Firewall Block All Allowlist
+	 * Created By:-Dheeraj Prajapati
+	 * -------------------------------------------------------------------------------------------------------------------
+	 */
 	//Testing is Remaining Blocker Bug
 	public void Block_All_AllowWebsite() throws MalformedURLException, InterruptedException {
-		
+
 		String Whitelistsite="https://www.amazon.com";
 		String ALLOtherBlockedSiteSample="https://www.flipkart.com";
-		
+
 		DesktopOptions option = new DesktopOptions();
 		option.setApplicationPath("C:\\Program Files\\Max Secure Total Security\\MaxSDUI.exe");
 		WiniumDriver driver=new WiniumDriver(new URL("http://localhost:9999"),option);
@@ -170,15 +174,15 @@ public class Firewall {
 		driver.findElement(By.id("5026")).click();
 		driver.findElement(By.name("OK")).click();
 		driver.close();
-		
+
 		Thread.sleep(2000);
 		wdriver = new ChromeDriver();
-		wdriver.manage().window().maximize(); 
-		wdriver.navigate().to(Whitelistsite); 
-		
+		wdriver.manage().window().maximize();
+		wdriver.navigate().to(Whitelistsite);
+
 		try {
 			String title_of_White_site=wdriver.getCurrentUrl();
-			
+
 			if(title_of_White_site.equals("https://www.amazon.com/"))
 			{
 				System.out.println("Website"+Whitelistsite+ "\tis Sucessfully Whitelisted By Antivirus");
@@ -186,13 +190,13 @@ public class Firewall {
 			else
 			{
 				System.out.println("Website"+Whitelistsite+ "\twas unable to Whitelist By Antivirus");
-					
+
 			}
 			wdriver.switchTo().newWindow(WindowType.TAB);
 			wdriver.navigate().to(ALLOtherBlockedSiteSample);
-			
+
 			try {
-				
+
 				String Block = wdriver.findElement(By.xpath("//span[contains(text(),'This Content is blocked by')]")).getText();
 				System.out.println(Block);
 			}
@@ -200,19 +204,24 @@ public class Firewall {
 			{
 				System.out.println("Block All is Not Working");
 			}
-			
-			
+
+
 		}
 		catch(Exception e)
 		{
-			
+
 			wdriver.close();
 		}
 		Thread.sleep(2000);
-	 }
+	}
+	/*--------------------------------------------------------------------------------------------------------------------
+	 * Module Name: Firewall PortBlocker
+	 * Created By:-Dheeraj Prajapati
+	 * -------------------------------------------------------------------------------------------------------------------
+	 */
 	//@Test(priority = 1)
 	public void portblocker() throws InterruptedException, IOException {
-		
+
 		Log logger2=new Log("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\Logs\\Firewall\\PortBlocker.txt");
 		DesktopOptions option = new DesktopOptions();
 		option.setApplicationPath("C:\\Program Files\\Max Secure Total Security\\MaxSDUI.exe");
@@ -225,12 +234,12 @@ public class Firewall {
 		logger2.logger.info("Successfully Clicked On PortBlocker");
 		Thread.sleep(1000);
 		try {
-			
-		driver.findElement(By.name("Add")).click();
-		logger2.logger.info("Clicked on ADD Button");
+
+			driver.findElement(By.name("Add")).click();
+			logger2.logger.info("Clicked on ADD Button");
 		}
 		catch(Exception e){
-			
+
 			logger2.logger.info("Unable to Click on ADD Button..Retrying");
 			driver.findElement(By.id("5141")).click();
 			driver.findElement(By.name("Add")).click();
@@ -249,71 +258,71 @@ public class Firewall {
 		driver.findElement(By.name("OK")).click();
 		logger2.logger.info("Successfully saved the Setting");
 		driver.close();
-        Thread.sleep(3000);
-        check();
-        boolean bSStatus =check();
-        if(bSStatus == true) {
-        	logger2.logger.info("---------------------------------------------------");
-        	logger2.logger.info("#TEST-CASE NAME#:- ADD IP,PORT TO BLOCK ");
-        	logger2.logger.info("---------------------------------------------------");
-        	logger2.logger.info("IP Port Blocked Successfully ");
-        	logger2.logger.info("#TEST CASE STATUS# :- PASSED");
-        }
-        else if(bSStatus==false)
-        {
-        	logger2.logger.info("---------------------------------------------------");
-        	logger2.logger.info("#TEST-CASE NAME#:- ADD IP,PORT TO BLOCK");
-        	logger2.logger.info("---------------------------------------------------");
-        	logger2.logger.info("Unable To Block IP Port ");
-        	logger2.logger.info("#TEST CASE STATUS# :-FAILED");
-        }
-        Thread.sleep(2000);
-        delete();
-        Thread.sleep(2000);
-        boolean bStatus =check();
-        if(bStatus==true)
-        {
-        	logger2.logger.info("---------------------------------------------------");
-        	logger2.logger.info("#TEST-CASE NAME#:- DELETE IP TO UNBLOCK IT ");
-        	logger2.logger.info("---------------------------------------------------");
-        	logger2.logger.info("Unable to UnBlocked IP Port ");
-        	logger2.logger.info("#TEST CASE STATUS# :-FAILED");
-        }
-        else if(bStatus==false)
-        {
-        	logger2.logger.info("---------------------------------------------------");
-        	logger2.logger.info("#TEST-CASE NAME#:- DELETE IP TO UNBLOCK IT ");
-        	logger2.logger.info("---------------------------------------------------");
-        	logger2.logger.info("IP Port UnBlocked Successfully ");
-        	logger2.logger.info("#TEST CASE STATUS# :- PASSED");
-        }
-        logger2.loggerhandleclose();
-        Thread.sleep(2000);	
+		Thread.sleep(3000);
+		check();
+		boolean bSStatus =check();
+		if(bSStatus == true) {
+			logger2.logger.info("---------------------------------------------------");
+			logger2.logger.info("#TEST-CASE NAME#:- ADD IP,PORT TO BLOCK ");
+			logger2.logger.info("---------------------------------------------------");
+			logger2.logger.info("IP Port Blocked Successfully ");
+			logger2.logger.info("#TEST CASE STATUS# :- PASSED");
+		}
+		else if(bSStatus==false)
+		{
+			logger2.logger.info("---------------------------------------------------");
+			logger2.logger.info("#TEST-CASE NAME#:- ADD IP,PORT TO BLOCK");
+			logger2.logger.info("---------------------------------------------------");
+			logger2.logger.info("Unable To Block IP Port ");
+			logger2.logger.info("#TEST CASE STATUS# :-FAILED");
+		}
+		Thread.sleep(2000);
+		delete();
+		Thread.sleep(2000);
+		boolean bStatus =check();
+		if(bStatus==true)
+		{
+			logger2.logger.info("---------------------------------------------------");
+			logger2.logger.info("#TEST-CASE NAME#:- DELETE IP TO UNBLOCK IT ");
+			logger2.logger.info("---------------------------------------------------");
+			logger2.logger.info("Unable to UnBlocked IP Port ");
+			logger2.logger.info("#TEST CASE STATUS# :-FAILED");
+		}
+		else if(bStatus==false)
+		{
+			logger2.logger.info("---------------------------------------------------");
+			logger2.logger.info("#TEST-CASE NAME#:- DELETE IP TO UNBLOCK IT ");
+			logger2.logger.info("---------------------------------------------------");
+			logger2.logger.info("IP Port UnBlocked Successfully ");
+			logger2.logger.info("#TEST CASE STATUS# :- PASSED");
+		}
+		logger2.loggerhandleclose();
+		Thread.sleep(2000);
 	}
-	
+
 	public boolean check()
-	
+
 	{
-        try {
-            
-        String ftpUrl = "ftp://"+ IPAddress;
-		URL url = new URL(ftpUrl);
+		try {
 
-		URLConnection conn = url.openConnection();
-		BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-		String inputLine;
-		while ((inputLine = in.readLine()) != null) ;
-		in.close();
+			String ftpUrl = "ftp://"+ IPAddress;
+			URL url = new URL(ftpUrl);
 
-        }
-        catch(Exception e) {
-        	return true;
-        	
-        }
-    	
-        return false;
+			URLConnection conn = url.openConnection();
+			BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+			String inputLine;
+			while ((inputLine = in.readLine()) != null) ;
+			in.close();
+
+		}
+		catch(Exception e) {
+			return true;
+
+		}
+
+		return false;
 	}
-	
+
 	public void delete() throws MalformedURLException, InterruptedException
 	{
 		DesktopOptions option = new DesktopOptions();
@@ -324,30 +333,35 @@ public class Firewall {
 		driver.findElement(By.id("5141")).click();
 		Thread.sleep(1000);
 		try {
-		driver.findElement(By.name("Delete")).click();
+			driver.findElement(By.name("Delete")).click();
 		}
 		catch(Exception e){
-			
+
 			driver.findElement(By.id("5141")).click();
 			driver.findElement(By.name(IPAddress)).click();
 			driver.findElement(By.name("Delete")).click();
 		}
-	
-		  driver.findElement(By.name("Yes")).click();
-		  driver.findElement(By.name("OK")).click();
-		  driver.findElement(By.name("Save")).click();
-		  driver.findElement(By.name("OK")).click();
-		  driver.findElement(By.id("5141")).click();
-		  driver.findElement(By.name("Save")).click();
-		  driver.findElement(By.name("OK")).click(); 
-		  driver.close();
-		  Thread.sleep(2000);
-		
+
+		driver.findElement(By.name("Yes")).click();
+		driver.findElement(By.name("OK")).click();
+		driver.findElement(By.name("Save")).click();
+		driver.findElement(By.name("OK")).click();
+		driver.findElement(By.id("5141")).click();
+		driver.findElement(By.name("Save")).click();
+		driver.findElement(By.name("OK")).click();
+		driver.close();
+		Thread.sleep(2000);
+
 	}
+	/*--------------------------------------------------------------------------------------------------------------------
+	 * Module Name: Firewall Application_Rule
+	 * Created By:-Dheeraj Prajapati
+	 * -------------------------------------------------------------------------------------------------------------------
+	 */
 	//@Test(priority = 2)
 	public void Application_Rule() throws InterruptedException, IOException
 	{
-		
+
 		Log logger3=new Log("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\Logs\\Firewall\\ApplicationRule.txt");
 		DesktopOptions option = new DesktopOptions();
 		logger3.logger.info("Started Application Rule Test");
@@ -412,28 +426,28 @@ public class Firewall {
 		logger3.loggerhandleclose();
 		Thread.sleep(2000);
 	}
-	
-	
+
+
 	public boolean apprulechecker()
 	{
 		wdriver = new ChromeDriver();
-		wdriver.manage().window().maximize(); 
+		wdriver.manage().window().maximize();
 		try {
-		wdriver.navigate().to("http://www.google.com"); 
-		String title = wdriver.getTitle();
+			wdriver.navigate().to("http://www.google.com");
+			String title = wdriver.getTitle();
 		}
 		catch(Exception e)
 		{
 			wdriver.close();
 			return true;
-			
+
 		}
 		wdriver.close();
-		
+
 		return false;
 	}
-	
-	
+
+
 	public void appruledeletechecker() throws MalformedURLException, InterruptedException
 	{
 		DesktopOptions option = new DesktopOptions();
@@ -443,93 +457,100 @@ public class Firewall {
 		driver.findElement(By.name("Application Rules")).click();
 		driver.findElement(By.id("5141")).click();
 		try {
-		driver.findElement(By.name("Delete")).click();
+			driver.findElement(By.name("Delete")).click();
 		}
 		catch(Exception e)
 		{
 			driver.findElement(By.id("5141")).click();
 			try {
-			driver.findElement(By.id("5142")).click();
-			driver.findElement(By.name("Delete")).click();
-			driver.findElement(By.name("Yes")).click();
-			driver.findElement(By.name("Save")).click();
-			driver.findElement(By.name("OK")).click();
-			driver.findElement(By.id("5141")).click();
+				driver.findElement(By.id("5142")).click();
+				driver.findElement(By.name("Delete")).click();
+				driver.findElement(By.name("Yes")).click();
+				driver.findElement(By.name("Save")).click();
+				driver.findElement(By.name("OK")).click();
+				driver.findElement(By.id("5141")).click();
 			}
 			catch(Exception en)
 			{
 				driver.close();
 			}
-			
-			
+
+
 		}
-		
+
 		driver.close();
 		Thread.sleep(2000);
 	}
-	//@Test(priority = 0)
-public void parentalcontrol() throws InterruptedException, IOException {
-		 
-	Log logger4=new Log("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\Logs\\Firewall\\ParentalControl.txt");
-	logger4.logger.info("********************************* STARTING PARENTAL CONTROL TEST********************************************");
-	DesktopOptions option = new DesktopOptions();
-	option.setApplicationPath("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\RegParentalCntrl.exe");
-	WiniumDriver driver=new WiniumDriver(new URL("http://localhost:9999"),option);
-	Thread.sleep(15000);
-	
-	logger4.logger.info("******************* STARTING CATEGORY BLOCK TEST *******************");
-	driver.findElement(By.name("Categories")).click();
-	driver.findElement(By.id("5106")).click();
-	try {
-	driver.findElement(By.id("5107")).click();//social site
-	}
-	catch(Exception e)
-	{
+	/*--------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Module Name: Firewall Parental Control
+	 * Created By:-Dheeraj Prajapati
+	 *
+	 * -------------------------------------------------------------------------------------------------------------------
+	 */
+	//@Test(priority = 3)
+	public void parentalcontrol() throws InterruptedException, IOException {
+
+		Log logger4=new Log("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\Logs\\Firewall\\ParentalControl.txt");
+		logger4.logger.info("********************************* STARTING PARENTAL CONTROL TEST********************************************");
+		DesktopOptions option = new DesktopOptions();
+		option.setApplicationPath("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\RegParentalCntrl.exe");
+		WiniumDriver driver=new WiniumDriver(new URL("http://localhost:9999"),option);
+		Thread.sleep(15000);
+
+		logger4.logger.info("******************* STARTING CATEGORY BLOCK TEST *******************");
+		driver.findElement(By.name("Categories")).click();
 		driver.findElement(By.id("5106")).click();
-		driver.findElement(By.id("5107")).click();//social site
-	}
-	Thread.sleep(1000);
-	driver.findElement(By.id("5118")).click(); //online store
-	Thread.sleep(1000);
-	driver.findElement(By.name("OK")).click();
-	Thread.sleep(1000);
-	driver.findElement(By.name("OK")).click();
-	logger4.logger.info("Entered Website and Saved the Setting");
-	Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
-	logger4.logger.info("Checking Whether Website is Blocked or Not");
-	wdriver = new ChromeDriver();
-	wdriver.manage().window().maximize();
-	wdriver.navigate().to("https://www.flipkart.com");
-	String title=wdriver.getCurrentUrl();
-	
-	try {
-		String blocked = wdriver.findElement(By.xpath("//span[contains(text(),'This Content is blocked by')]")).getText();
-		System.out.println(blocked);
-		logger4.logger.info("--------------------------------------------------------------------------");
-		logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL CATEGORY(SHOPPING) BLOCK ");
-		logger4.logger.info("--------------------------------------------------------------------------");
-		logger4.logger.info("Website is Sucessfully Blocked By Antivirus");
-		logger4.logger.info("#TEST CASE STATUS# :- PASSED");
-		wdriver.close();
-		
-	}
-	catch(Exception e)
-	{
-		logger4.logger.info("------------------------------------------------------------------------");
-		logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL CATEGORY(SHOPPING) BLOCK");
-		logger4.logger.info("------------------------------------------------------------------------");
-		logger4.logger.info("Unable to Block Website By Antivirus");
-		logger4.logger.info("#TEST CASE STATUS# :-FAILED");
-		
-		wdriver.close();
-	}
-		
-		
+		try {
+			driver.findElement(By.id("5107")).click();//social site
+		}
+		catch(Exception e)
+		{
+			driver.findElement(By.id("5106")).click();
+			driver.findElement(By.id("5107")).click();//social site
+		}
+		Thread.sleep(1000);
+		driver.findElement(By.id("5118")).click(); //online store
+		Thread.sleep(1000);
+		driver.findElement(By.name("OK")).click();
+		Thread.sleep(1000);
+		driver.findElement(By.name("OK")).click();
+		logger4.logger.info("Entered Website and Saved the Setting");
+		Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
+		logger4.logger.info("Checking Whether Website is Blocked or Not");
 		wdriver = new ChromeDriver();
-		wdriver.manage().window().maximize(); 
+		wdriver.manage().window().maximize();
+		wdriver.navigate().to("https://www.flipkart.com");
+		String title=wdriver.getCurrentUrl();
+
+		try {
+			String blocked = wdriver.findElement(By.xpath("//span[contains(text(),'This Content is blocked by')]")).getText();
+			System.out.println(blocked);
+			logger4.logger.info("--------------------------------------------------------------------------");
+			logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL CATEGORY(SHOPPING) BLOCK ");
+			logger4.logger.info("--------------------------------------------------------------------------");
+			logger4.logger.info("Website is Sucessfully Blocked By Antivirus");
+			logger4.logger.info("#TEST CASE STATUS# :- PASSED");
+			wdriver.close();
+
+		}
+		catch(Exception e)
+		{
+			logger4.logger.info("------------------------------------------------------------------------");
+			logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL CATEGORY(SHOPPING) BLOCK");
+			logger4.logger.info("------------------------------------------------------------------------");
+			logger4.logger.info("Unable to Block Website By Antivirus");
+			logger4.logger.info("#TEST CASE STATUS# :-FAILED");
+
+			wdriver.close();
+		}
+
+
+		wdriver = new ChromeDriver();
+		wdriver.manage().window().maximize();
 		wdriver.navigate().to("https://www.twitter.com");
 		String title1=wdriver.getCurrentUrl();
-	
+
 		try {
 			String blocked = wdriver.findElement(By.xpath("//span[contains(text(),'This Content is blocked by')]")).getText();
 			System.out.println(blocked);
@@ -539,7 +560,7 @@ public void parentalcontrol() throws InterruptedException, IOException {
 			logger4.logger.info("Website is Sucessfully Blocked By Antivirus");
 			logger4.logger.info("#TEST CASE STATUS# :- PASSED");
 			wdriver.close();
-			
+
 		}
 		catch(Exception e)
 		{
@@ -548,11 +569,11 @@ public void parentalcontrol() throws InterruptedException, IOException {
 			logger4.logger.info("-------------------------------------------------------------------------------");
 			logger4.logger.info("Unable to Block Website By Antivirus");
 			logger4.logger.info("#TEST CASE STATUS# :-FAILED");
-			
+
 			wdriver.close();
 		}
-		
-		
+
+
 		//DesktopOptions option1 = new DesktopOptions();
 		option.setApplicationPath("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\OpenFirewall.exe");
 		WiniumDriver driver6=new WiniumDriver(new URL("http://localhost:9999"),option);
@@ -565,13 +586,13 @@ public void parentalcontrol() throws InterruptedException, IOException {
 		Thread.sleep(1000);
 		driver6.findElement(By.name("OK")).click();
 		Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
-		
-		
+
+
 		wdriver = new ChromeDriver();
 		wdriver.manage().window().maximize();
 		wdriver.navigate().to("https://www.flipkart.com");
-		
-		
+
+
 		try {
 			String blocked = wdriver.findElement(By.xpath("//span[contains(text(),'This Content is blocked by')]")).getText();
 			System.out.println(blocked);
@@ -581,7 +602,7 @@ public void parentalcontrol() throws InterruptedException, IOException {
 			logger4.logger.info("Unable to Unblock The Website  By Antivirus");
 			logger4.logger.info("#TEST CASE STATUS# :- FAILED");
 			wdriver.close();
-			
+
 		}
 		catch(Exception e)
 		{
@@ -589,12 +610,12 @@ public void parentalcontrol() throws InterruptedException, IOException {
 			logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL CATEGORY UNBLOCK");
 			logger4.logger.info("------------------------------------------------------------------------");
 			logger4.logger.info("UnBlocked Website By Antivirus");
-			logger4.logger.info("#TEST CASE STATUS# :-PASSED");	
+			logger4.logger.info("#TEST CASE STATUS# :-PASSED");
 			wdriver.close();
 		}
-		
-		
-		
+
+
+
 		DesktopOptions option1 = new DesktopOptions();
 		option1.setApplicationPath("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\OpenFirewall.exe");
 		WiniumDriver driver1=new WiniumDriver(new URL("http://localhost:9999"),option);
@@ -609,14 +630,14 @@ public void parentalcontrol() throws InterruptedException, IOException {
 		driver1.findElement(By.name("OK")).click();
 		driver1.findElement(By.name("Save")).click();
 		driver1.findElement(By.name("OK")).click();
-		
+
 		Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
-		
+
 		Thread.sleep(2000);
 		wdriver = new ChromeDriver();
-		wdriver.manage().window().maximize(); 
+		wdriver.manage().window().maximize();
 		wdriver.navigate().to("https://irctc.com");
-		
+
 		try {
 			String blocked = wdriver.findElement(By.xpath("//span[contains(text(),'This Content is blocked by')]")).getText();
 			System.out.println(blocked);
@@ -626,7 +647,7 @@ public void parentalcontrol() throws InterruptedException, IOException {
 			logger4.logger.info("Website is Sucessfully Blocked By Antivirus");
 			logger4.logger.info("#TEST CASE STATUS# :- PASSED");
 			wdriver.close();
-			
+
 		}
 		catch(Exception e)
 		{
@@ -635,12 +656,12 @@ public void parentalcontrol() throws InterruptedException, IOException {
 			logger4.logger.info("---------------------------------------------------------------");
 			logger4.logger.info("Unable to Block Website By Antivirus");
 			logger4.logger.info("#TEST CASE STATUS# :-FAILED");
-			
+
 			wdriver.close();
 		}
-	
-		
-		//DesktopOptions option = new DesktopOptions();
+
+
+
 		option.setApplicationPath("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\OpenFirewall.exe");
 		WiniumDriver driver7=new WiniumDriver(new URL("http://localhost:9999"),option);
 		Thread.sleep(10000);
@@ -654,12 +675,12 @@ public void parentalcontrol() throws InterruptedException, IOException {
 		driver7.findElement(By.id("5206")).click();
 		Thread.sleep(1000);
 		Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
-		
+
 		Thread.sleep(2000);
 		wdriver = new ChromeDriver();
-		wdriver.manage().window().maximize(); 
+		wdriver.manage().window().maximize();
 		wdriver.navigate().to("https://irctc.com");
-		
+
 		try {
 			String blocked = wdriver.findElement(By.xpath("//span[contains(text(),'This Content is blocked by')]")).getText();
 			System.out.println(blocked);
@@ -669,7 +690,7 @@ public void parentalcontrol() throws InterruptedException, IOException {
 			logger4.logger.info("Unable to Unblock Website By Antivirus");
 			logger4.logger.info("#TEST CASE STATUS# :- FAILED");
 			wdriver.close();
-			
+
 		}
 		catch(Exception e)
 		{
@@ -678,329 +699,421 @@ public void parentalcontrol() throws InterruptedException, IOException {
 			logger4.logger.info("---------------------------------------------------------------");
 			logger4.logger.info("UnBlocked Website By Antivirus");
 			logger4.logger.info("#TEST CASE STATUS# :-PASSED");
-			
+
 			wdriver.close();
 		}
-		
-	
-	
-		
+
+
+
+
 		logger4.logger.info("******************* STARTING INTERNET USAGE BLOCK TEST *******************");
 		option.setApplicationPath("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\OpenFirewall.exe");
 		WiniumDriver driver2=new WiniumDriver(new URL("http://localhost:9999"),option);
 		Thread.sleep(10000);
-		
+
 		driver2.findElement(By.name("Internet Usage")).click();
 		Thread.sleep(800);
 		driver2.findElement(By.name("Enable Internet Usage Blocking")).click();
 		Thread.sleep(800);
-		
-		Format f = new SimpleDateFormat("HH.mm.ss Z"); 
-        f = new SimpleDateFormat("EEEE");
-        String day = f.format(new Date());
-       
-        if(day.equals("Monday")||day.equals("Tuesday")||day.equals("Wednesday")||day.equals("Thursday")||day.equals("Friday"))
-        {
-        	driver2.findElement(By.id("5093")).click();
-        	Thread.sleep(2000);
-        	selecttime();
-            driver2.findElement(By.id(timetobeselectedweedays)).click();
-            driver2.findElement(By.name("OK")).click();
-            Thread.sleep(3000);
-            Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe"); 
-            Thread.sleep(1000);
-            Runtime runTime = Runtime.getRuntime();
-            String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\intblockparental.exe";
-            Process process = runTime.exec(executablePath);
-            Thread.sleep(1000);
-            Thread.sleep(23000);
-            Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
-            blockchecker();
-            
-           boolean Bstatus=blockchecker();
-           if(Bstatus==true)
-           {
-        	logger4.logger.info("-----------------------------------------------------------------");
-   			logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK");
-   			logger4.logger.info("-----------------------------------------------------------------");
-   			logger4.logger.info("INTERNET Blocked By Antivirus");
-   			logger4.logger.info("#TEST CASE STATUS# :- PASSED");
-   			
-   			
-           }
-           else if(Bstatus==false)
-           {
-        	   
-        	   logger4.logger.info("-----------------------------------------------------------------");
-        	   logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK");
-        	   logger4.logger.info("-----------------------------------------------------------------");
-        	   logger4.logger.info("INTERNET Not Blocked By Antivirus");
-        	   logger4.logger.info("#TEST CASE STATUS# :- FAILED");
-        	 
-        	   
-           }
-            		
-        }
-        else if(day.equals("Saturday")||day.equals("Sunday"))
-        {
-        	driver2.findElement(By.id("5096")).click();
-        	Thread.sleep(2000);
-        	selecttime();
-        	driver2.findElement(By.id(timetobeselectedweekends)).click();
-        	driver2.findElement(By.name("OK")).click();
-        	Thread.sleep(3000);
-            Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe"); 
-            Runtime runTime = Runtime.getRuntime();
-            String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\intblockparental.exe";
-            Process process = runTime.exec(executablePath);
-            Thread.sleep(1000);
-            Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe"); 
-            Thread.sleep(19000);
-        	blockchecker();
-        	
-        	 boolean Bstatus=blockchecker();
-             if(Bstatus==true)
-             {
-            	 logger4.logger.info("-----------------------------------------------------------------");
-     			logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK");
-     			logger4.logger.info("-----------------------------------------------------------------");
-     			logger4.logger.info("INTERNET Blocked By Antivirus");
-     			logger4.logger.info("#TEST CASE STATUS# :- PASSED");
-     		
-     			
-             }
-             else if(Bstatus==false)
-             {
-          	   logger4.logger.info("-----------------------------------------------------------------");
-          	   logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK");
-          	   logger4.logger.info("-----------------------------------------------------------------");
-          	   logger4.logger.info("INTERNET Not Blocked By Antivirus");
-          	   logger4.logger.info("#TEST CASE STATUS# :- FAILED");
-          	  
-          	   
-             }
-             
-        }
-        logger4.logger.info("******************* STARTING INTERNET USAGE UNBLOCK TEST *******************");
-        Runtime runTime = Runtime.getRuntime();
-        String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\intblockparentalRemove.exe";
-        Process process = runTime.exec(executablePath);
-        Thread.sleep(20000);
-        Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
-        blockchecker();
-    	
-      	 boolean Bstatus=blockchecker();
-           if(Bstatus==true)
-           {
-          	 logger4.logger.info("--------------------------------------------------------------------");
-   			logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK REMOVE");
-   			logger4.logger.info("-----------------------------------------------------------------");
-   			logger4.logger.info("Unable to Unblock INTERNET By Antivirus");
-   			logger4.logger.info("#TEST CASE STATUS# :- FAILED");
-   			
-   			
-           }
-           else if(Bstatus==false)
-           {
-        	   logger4.logger.info("-----------------------------------------------------------------");
-        	   logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK REMOVE");
-        	   logger4.logger.info("-----------------------------------------------------------------");
-        	   logger4.logger.info("INTERNET UNBlocked By Antivirus");
-        	   logger4.logger.info("#TEST CASE STATUS# :- PASSED");
-        	    
-        	   
-           }
-		
-           logger4.logger.info("******************* STARTING COMPUTER USAGE BLOCK TEST *******************");
-           option.setApplicationPath("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\OpenFirewall.exe");
-           WiniumDriver driver9=new WiniumDriver(new URL("http://localhost:9999"),option); 
-           Thread.sleep(10000);
 
-           driver9.findElement(By.name("PC Usage")).click();
-           Thread.sleep(800);
-           driver9.findElement(By.name("Enable Computer usage blocking")).click();
-           Thread.sleep(800);
+		Format f = new SimpleDateFormat("HH.mm.ss Z");
+		f = new SimpleDateFormat("EEEE");
+		String day = f.format(new Date());
 
-           Format f1 = new SimpleDateFormat("HH.mm.ss Z"); 
-           f1 = new SimpleDateFormat("EEEE");
-           String day1 = f.format(new Date());
-
-           if(day1.equals("Monday")||day1.equals("Tuesday")||day1.equals("Wednesday")||day1.equals("Thursday")||day1.equals("Friday"))
-           {
-        	   driver9.findElement(By.id("5093")).click();
-        	   Thread.sleep(2000);
-        	   selecttime();
-        	   driver9.findElement(By.id(timetobeselectedweedays)).click();
-        	   driver9.findElement(By.name("OK")).click();
-        	   Thread.sleep(3000); 
-        	   driver9.findElement(By.name("OK")).click();
-        	   Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
-        	   Thread.sleep(10000);
-        	   try {
-        		   driver9.findElement(By.name("Disable user control")).click();
-        		   driver9.findElement(By.id("1094")).click();
-        		   driver9.findElement(By.id("1094")).sendKeys("123456");
-        		   driver9.findElement(By.name("Enter")).click();
-        		   logger4.logger.info("-----------------------------------------------------------------");
-            	   logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL COMPUTER USAGE BLOCK");
-            	   logger4.logger.info("-----------------------------------------------------------------");
-            	   logger4.logger.info("Usage Blocked By Antivirus");
-            	   logger4.logger.info("#TEST CASE STATUS# :- PASSED");
-        		   
-        	   }
-        	   catch(Exception e)
-        	   {
-        		
-        		   logger4.logger.info("-----------------------------------------------------------------");
-            	   logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL COMPUTER USAGE BLOCK");
-            	   logger4.logger.info("-----------------------------------------------------------------");
-            	   logger4.logger.info("Usage Did Not Blocked By Antivirus");
-            	   logger4.logger.info("#TEST CASE STATUS# :- FAILED");
-        	   }
-           }
-           else if(day1.equals("Saturday")||day1.equals("Sunday"))
-           {
-        	   driver9.findElement(By.id("5096")).click();
-        	   Thread.sleep(2000);
-        	   selecttime();
-        	   driver9.findElement(By.id(timetobeselectedweekends)).click();
-        	   driver9.findElement(By.name("OK")).click();
-        	   driver9.findElement(By.name("OK")).click();
-        	   Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
-        	   Thread.sleep(10000);
-        	   try {
-        		   driver9.findElement(By.name("Disable user control")).click();
-        		   driver9.findElement(By.id("1094")).click();
-        		   driver9.findElement(By.id("1094")).sendKeys("123456");
-        		   driver9.findElement(By.name("Enter")).click();
-        		   logger4.logger.info("-----------------------------------------------------------------");
-            	   logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL COMPUTER USAGE BLOCK");
-            	   logger4.logger.info("-----------------------------------------------------------------");
-            	   logger4.logger.info("Usage Blocked By Antivirus");
-            	   logger4.logger.info("#TEST CASE STATUS# :- PASSED");
-        	   }
-        	   catch(Exception e)
-        	   {
-        		   logger4.logger.info("-----------------------------------------------------------------");
-            	   logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL COMPUTER USAGE BLOCK");
-            	   logger4.logger.info("-----------------------------------------------------------------");
-            	   logger4.logger.info("Usage Did Not Blocked By Antivirus");
-            	   logger4.logger.info("#TEST CASE STATUS# :- FAILED");
-        	   }
-           }
-           
-           option.setApplicationPath("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\ParentalPassRemove.exe");
-           WiniumDriver driver11=new WiniumDriver(new URL("http://localhost:9999"),option); 
-           Thread.sleep(15000);
-           Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
-           logger4.logger.info("-----------------------------------------------------------------");
-    	   logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL COMPUTER USAGE BLOCK REMOVE AND REMOVE FIRWALL PASSWORD");
-    	   logger4.logger.info("-----------------------------------------------------------------");
-    	   logger4.logger.info("Removed Password From Parental Control");
-    	   logger4.logger.info("#TEST CASE STATUS# :- PASSED");
-    	   
-    	   logger4.logger.info("********************************* ENDING PARENTAL CONTROL TEST********************************************");
-	}
-@Test
-	 public Connection IDS() throws InterruptedException, IOException, ClassNotFoundException
-	 {
-		  Connection conn = null;  
-		 	DesktopOptions option = new DesktopOptions();
-			option.setApplicationPath("C:\\Program Files\\Max Secure Total Security\\MaxSDUI.exe");
-			WiniumDriver driver=new WiniumDriver(new URL("http://localhost:9999"),option);
-			driver.findElement(By.name("Protection Center")).click();
+		if(day.equals("Monday")||day.equals("Tuesday")||day.equals("Wednesday")||day.equals("Thursday")||day.equals("Friday"))
+		{
+			driver2.findElement(By.id("5093")).click();
 			Thread.sleep(2000);
-			driver.findElement(By.name("Max IDS")).click();
-			Thread.sleep(2000);
-			driver.findElement(By.id("5141")).click();
-			driver.findElement(By.name("Add")).click();	
-			driver.findElement(By.id("5199")).sendKeys("192.168.1.201");
-			driver.findElement(By.name("OK")).click();	
-			driver.findElement(By.name("Save")).click();	
-			Thread.sleep(2000);
-			driver.findElement(By.name("OK")).click();	
+			selecttime();
+			driver2.findElement(By.id(timetobeselectedweedays)).click();
+			driver2.findElement(By.name("OK")).click();
+			Thread.sleep(3000);
 			Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
-			Thread.sleep(2000);
+			Thread.sleep(1000);
 			Runtime runTime = Runtime.getRuntime();
-		    String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\RunProctectionPause.exe";
-		    Process process = runTime.exec(executablePath);
-		    Thread.sleep(4000);
-			 
-			 File source = new File("C://Program Files/Max Secure Total Security/MaxPnP");
-			 File dest = new File("C:\\Windows\\Temp\\pnp");
-			 try {
-			     FileUtils.copyDirectory(source, dest);
-			     System.out.println("File Copied to Temp");
-			 } catch (IOException e) {
-			     e.printStackTrace();
-			     System.out.println("Unable to copy to Temp");
-			 }
-			  
-			
-			 try {  
-				 // db parameters  
-				 String url = "jdbc:sqlite:C:\\Windows\\Temp\\pnp\\PnpFirewall.DB";  
-				
-				 Class.forName("org.sqlite.JDBC");
-				 conn = DriverManager.getConnection(url);  
+			String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\intblockparental.exe";
+			Process process = runTime.exec(executablePath);
+			Thread.sleep(1000);
+			Thread.sleep(23000);
+			Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
+			blockchecker();
 
-				 System.out.println("Connection to SQLite has been established."); 
-				 selectAll();
+			boolean Bstatus=blockchecker();
+			if(Bstatus==true)
+			{
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK");
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("INTERNET Blocked By Antivirus");
+				logger4.logger.info("#TEST CASE STATUS# :- PASSED");
 
-			 } catch (SQLException e) {  
-				 System.out.println(e.getMessage());  
-			 } 
-			 
-			return conn;
-			
-		 }
-	
-	
-	public void selectAll() throws ClassNotFoundException, IOException, InterruptedException{  
-		        String sql = " select * from idsip where FilterString='192.168.1.202'";  
-		        ResultSet rs = null;
-		        String ip="";
-		        try {  
-		            Connection conn = this.IDS(); 
-		            Statement stmt  = conn.createStatement();  
-		            rs= stmt.executeQuery(sql);  
-		                while (rs.next()) {  
-		            
-		                ip=rs.getString("FilterString");
-		            	
-		            }  
-		        } catch (SQLException e) {  
-		            System.out.println(e.getMessage()); 
-		            
-		        }  
-		        if(ip.equals("192.168.1.201"))
-            	{
-            		System.out.println("String Found"+ "\t" +ip);
-            		
-            	}
-            	else {
-            		System.out.println("String Not Found");
-				}
-		       
-		        Runtime runTime = Runtime.getRuntime();
-		        String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\ProtectionResume.exe";
-		        Process process1 = runTime.exec(executablePath);
-		    }  
-		 
-			
-		 
-	 
-	public void selecttime() throws MalformedURLException { 
-		
+
+			}
+			else if(Bstatus==false)
+			{
+
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK");
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("INTERNET Not Blocked By Antivirus");
+				logger4.logger.info("#TEST CASE STATUS# :- FAILED");
+
+
+			}
+
+		}
+		else if(day.equals("Saturday")||day.equals("Sunday"))
+		{
+			driver2.findElement(By.id("5096")).click();
+			Thread.sleep(2000);
+			selecttime();
+			driver2.findElement(By.id(timetobeselectedweekends)).click();
+			driver2.findElement(By.name("OK")).click();
+			Thread.sleep(3000);
+			Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
+			Runtime runTime = Runtime.getRuntime();
+			String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\intblockparental.exe";
+			Process process = runTime.exec(executablePath);
+			Thread.sleep(1000);
+			Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
+			Thread.sleep(19000);
+			blockchecker();
+
+			boolean Bstatus=blockchecker();
+			if(Bstatus==true)
+			{
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK");
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("INTERNET Blocked By Antivirus");
+				logger4.logger.info("#TEST CASE STATUS# :- PASSED");
+
+
+			}
+			else if(Bstatus==false)
+			{
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK");
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("INTERNET Not Blocked By Antivirus");
+				logger4.logger.info("#TEST CASE STATUS# :- FAILED");
+
+
+			}
+
+		}
+		logger4.logger.info("******************* STARTING INTERNET USAGE UNBLOCK TEST *******************");
+		Runtime runTime = Runtime.getRuntime();
+		String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\intblockparentalRemove.exe";
+		Process process = runTime.exec(executablePath);
+		Thread.sleep(20000);
+		Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
+		blockchecker();
+
+		boolean Bstatus=blockchecker();
+		if(Bstatus==true)
+		{
+			logger4.logger.info("--------------------------------------------------------------------");
+			logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK REMOVE");
+			logger4.logger.info("-----------------------------------------------------------------");
+			logger4.logger.info("Unable to Unblock INTERNET By Antivirus");
+			logger4.logger.info("#TEST CASE STATUS# :- FAILED");
+
+
+		}
+		else if(Bstatus==false)
+		{
+			logger4.logger.info("-----------------------------------------------------------------");
+			logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL INTERNET BLOCK REMOVE");
+			logger4.logger.info("-----------------------------------------------------------------");
+			logger4.logger.info("INTERNET UNBlocked By Antivirus");
+			logger4.logger.info("#TEST CASE STATUS# :- PASSED");
+
+
+		}
+
+		logger4.logger.info("******************* STARTING COMPUTER USAGE BLOCK TEST *******************");
+		option.setApplicationPath("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\OpenFirewall.exe");
+		WiniumDriver driver9=new WiniumDriver(new URL("http://localhost:9999"),option);
+		Thread.sleep(10000);
+
+		driver9.findElement(By.name("PC Usage")).click();
+		Thread.sleep(800);
+		driver9.findElement(By.name("Enable Computer usage blocking")).click();
+		Thread.sleep(800);
+
+		Format f1 = new SimpleDateFormat("HH.mm.ss Z");
+		f1 = new SimpleDateFormat("EEEE");
+		String day1 = f.format(new Date());
+
+		if(day1.equals("Monday")||day1.equals("Tuesday")||day1.equals("Wednesday")||day1.equals("Thursday")||day1.equals("Friday"))
+		{
+			driver9.findElement(By.id("5093")).click();
+			Thread.sleep(2000);
+			selecttime();
+			driver9.findElement(By.id(timetobeselectedweedays)).click();
+			driver9.findElement(By.name("OK")).click();
+			Thread.sleep(3000);
+			driver9.findElement(By.name("OK")).click();
+			Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
+			Thread.sleep(10000);
+			try {
+				driver9.findElement(By.name("Disable user control")).click();
+				driver9.findElement(By.id("1094")).click();
+				driver9.findElement(By.id("1094")).sendKeys("123456");
+				driver9.findElement(By.name("Enter")).click();
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL COMPUTER USAGE BLOCK");
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("Usage Blocked By Antivirus");
+				logger4.logger.info("#TEST CASE STATUS# :- PASSED");
+
+			}
+			catch(Exception e)
+			{
+
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL COMPUTER USAGE BLOCK");
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("Usage Did Not Blocked By Antivirus");
+				logger4.logger.info("#TEST CASE STATUS# :- FAILED");
+			}
+		}
+		else if(day1.equals("Saturday")||day1.equals("Sunday"))
+		{
+			driver9.findElement(By.id("5096")).click();
+			Thread.sleep(2000);
+			selecttime();
+			driver9.findElement(By.id(timetobeselectedweekends)).click();
+			driver9.findElement(By.name("OK")).click();
+			driver9.findElement(By.name("OK")).click();
+			Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
+			Thread.sleep(10000);
+			try {
+				driver9.findElement(By.name("Disable user control")).click();
+				driver9.findElement(By.id("1094")).click();
+				driver9.findElement(By.id("1094")).sendKeys("123456");
+				driver9.findElement(By.name("Enter")).click();
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL COMPUTER USAGE BLOCK");
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("Usage Blocked By Antivirus");
+				logger4.logger.info("#TEST CASE STATUS# :- PASSED");
+			}
+			catch(Exception e)
+			{
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL COMPUTER USAGE BLOCK");
+				logger4.logger.info("-----------------------------------------------------------------");
+				logger4.logger.info("Usage Did Not Blocked By Antivirus");
+				logger4.logger.info("#TEST CASE STATUS# :- FAILED");
+			}
+		}
+
+		option.setApplicationPath("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\ParentalPassRemove.exe");
+		WiniumDriver driver11=new WiniumDriver(new URL("http://localhost:9999"),option);
+		Thread.sleep(15000);
+		Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
+		logger4.logger.info("-----------------------------------------------------------------");
+		logger4.logger.info("#TEST-CASE NAME#:-FIREWALL PARENTAL CONTROL COMPUTER USAGE BLOCK REMOVE AND REMOVE FIRWALL PASSWORD");
+		logger4.logger.info("-----------------------------------------------------------------");
+		logger4.logger.info("Removed Password From Parental Control");
+		logger4.logger.info("#TEST CASE STATUS# :- PASSED");
+
+		logger4.logger.info("********************************* ENDING PARENTAL CONTROL TEST********************************************");
+		logger4.loggerhandleclose();
+	}
+	/*--------------------------------------------------------------------------------------------------------------------
+	 *
+	 * Module Name: Firewall Max IDS
+	 * Created By:-Dheeraj Prajapati
+	 *
+	 * -------------------------------------------------------------------------------------------------------------------
+	 */
+	@Test
+	public void IDSRun() throws InterruptedException, IOException, ClassNotFoundException, SQLException {
+
+		ids=new Log("C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\Logs\\Firewall\\MaxIDS.txt");
+		ids.logger.info("********************************* STARTING MAX IDS TEST********************************************");
+		DesktopOptions option = new DesktopOptions();
+		option.setApplicationPath("C:\\Program Files\\Max Secure Total Security\\MaxSDUI.exe");
+		WiniumDriver driver=new WiniumDriver(new URL("http://localhost:9999"),option);
+		driver.findElement(By.name("Protection Center")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.name("Max IDS")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.id("5141")).click();
+		driver.findElement(By.name("Add")).click();
+		driver.findElement(By.id("5199")).sendKeys("192.168.1.201");
+		driver.findElement(By.name("OK")).click();
+		driver.findElement(By.name("Save")).click();
+		ids.logger.info("Added IP and Saved successfully");
+		Thread.sleep(2000);
+		driver.findElement(By.name("OK")).click();
+		Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
+		Thread.sleep(2000);
+
+		Runtime runTime = Runtime.getRuntime();
+		String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\RunProctectionPause.exe";
+		Process process = runTime.exec(executablePath);
+		ids.logger.info("Paused The Protection");
+		Thread.sleep(4000);
+		filecopy();
+		Thread.sleep(3000);
+
+		String fl= findipinDB();
+
+		if(fl.equals("192.168.1.201"))
+		{
+			ids.logger.info("----------------------------------------------------------");
+			ids.logger.info("#TEST-CASE NAME#:-FIREWALL MAX IDS ");
+			ids.logger.info("----------------------------------------------------------");
+			ids.logger.info("IP Address  \t"+fl+ "\t Successfully added");
+			ids.logger.info("#TEST CASE STATUS# :- PASSED");
+
+
+		}
+		else {
+			ids.logger.info("----------------------------------------------------------");
+			ids.logger.info("#TEST-CASE NAME#:-FIREWALL MAX IDS ");
+			ids.logger.info("----------------------------------------------------------");
+			ids.logger.info("Unable to Add IP Address  \t"+fl+ "\t");
+			ids.logger.info("#TEST CASE STATUS# :- FAILED");
+		}
+		Thread.sleep(2000);
+		IDSRunRemove();
+		ids.loggerhandleclose();
+	}
+
+	public Connection IDS() throws InterruptedException, IOException, ClassNotFoundException
+	{
+
+		try {
+
+			String url = "jdbc:sqlite:C:\\Windows\\Temp\\pnp\\PnpFirewall.DB";
+
+			Class.forName("org.sqlite.JDBC");
+			conn = DriverManager.getConnection(url);
+
+			ids.logger.info("DB Connection Successfull");
+
+
+
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			ids.logger.info("DB Connection UnSuccessfull");
+		}
+
+		return conn;
+
+	}
+
+
+	public String findipinDB() throws ClassNotFoundException, IOException, InterruptedException, SQLException{
+
+		String sql = " select * from idsip where FilterString='192.168.1.201'";
+		ResultSet rs = null;
+		String ip="";
+		try {
+			conn = this.IDS();
+			Statement stmt  = conn.createStatement();
+			rs= stmt.executeQuery(sql);
+			while (rs.next()) {
+
+				ip=rs.getString("FilterString");
+
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+
+		}
+
+		Runtime runTime = Runtime.getRuntime();
+		String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\ProtectionResume.exe";
+		Process process1 = runTime.exec(executablePath);
+		ids.logger.info("Protection Resumed");
+		Thread.sleep(2000);
+		conn.close();
+		return ip;
+	}
+
+	public void IDSRunRemove() throws InterruptedException, IOException, ClassNotFoundException, SQLException {
+
+		ids.logger.info("****************** STARTING MAX IDS REMOVE TEST*************************");
+		DesktopOptions option = new DesktopOptions();
+		option.setApplicationPath("C:\\Program Files\\Max Secure Total Security\\MaxSDUI.exe");
+		WiniumDriver driver=new WiniumDriver(new URL("http://localhost:9999"),option);
+		driver.findElement(By.name("Protection Center")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.name("Max IDS")).click();
+		Thread.sleep(2000);
+		driver.findElement(By.id("5141")).click();
+		driver.findElement(By.id("5206")).click();
+		driver.findElement(By.name("Delete")).click();
+		Thread.sleep(800);
+		driver.findElement(By.name("Yes")).click();
+		Thread.sleep(800);
+		driver.findElement(By.name("OK")).click();
+		Thread.sleep(800);
+		Runtime.getRuntime().exec("TASKKILL /F /IM MaxSDUI.exe");
+		Thread.sleep(2000);
+		Runtime runTime = Runtime.getRuntime();
+		String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\AutoITScript\\RunProctectionPause.exe";
+		Process process = runTime.exec(executablePath);
+		ids.logger.info("Paused The Protection");
+		Thread.sleep(4000);
+		filecopy();
+		Thread.sleep(3000);
+
+		String fl= findipinDB();
+
+		if(fl.equals("192.168.1.201"))
+		{
+			ids.logger.info("----------------------------------------------------------");
+			ids.logger.info("#TEST-CASE NAME#:-FIREWALL MAX IDS REMOVE ");
+			ids.logger.info("----------------------------------------------------------");
+			ids.logger.info("Unable to Remove IP Address  \t"+fl);
+			ids.logger.info("#TEST CASE STATUS# :- FAILED");
+
+
+		}
+		else {
+			ids.logger.info("----------------------------------------------------------");
+			ids.logger.info("#TEST-CASE NAME#:-FIREWALL MAX IDS REMOVE ");
+			ids.logger.info("----------------------------------------------------------");
+			ids.logger.info("IP Address  \t"+fl+ "\t Removed Successfully");
+			ids.logger.info("#TEST CASE STATUS# :- PASSED");
+		}
+
+		ids.logger.info("********************************* END MAX IDS TEST********************************************");
+	}
+
+	public void filecopy() {
+
+		File source = new File("C://Program Files/Max Secure Total Security/MaxPnP");
+		File dest = new File("C:\\Windows\\Temp\\pnp");
+		try {
+			FileUtils.copyDirectory(source, dest);
+
+			ids.logger.info("Copied MAXPNP.db to Temp Folder");
+		} catch (IOException e) {
+			e.printStackTrace();
+
+			ids.logger.info("Unable to Copy MAXPNP.db to Temp Folder");
+		}
+	}
+
+	public void selecttime() throws MalformedURLException {
+
 		String time="";
-		Calendar cal = Calendar.getInstance(); 
-		SimpleDateFormat sdf = new SimpleDateFormat("HH"); 
-		time=sdf.format(cal.getTime()); 
+		Calendar cal = Calendar.getInstance();
+		SimpleDateFormat sdf = new SimpleDateFormat("HH");
+		time=sdf.format(cal.getTime());
 		int Hrs=Integer.parseInt(time); //converting string time to integer
 		int weekdaytime =101; //By Default id for weekdays of the date in UI int
 		int weekendsdaytime =201;//By Default id for weekendsdays of the date in UI
-		int timeintweek = Hrs; 
-		int timeintweekends = Hrs; 
+		int timeintweek = Hrs;
+		int timeintweekends = Hrs;
 		timeintweek +=weekdaytime; //creating button id to be clicked on UI by adding hr for Weekday
 		timeintweekends +=weekendsdaytime;//creating button id to be clicked on UI by adding hr for Weekends
 		timetobeselectedweedays=String.valueOf(timeintweek); //creating string from int
@@ -1008,33 +1121,47 @@ public void parentalcontrol() throws InterruptedException, IOException {
 
 	}
 	public boolean blockchecker() {
-		
-		try {
-		    URL yahoo = new URL("http://www.google.com/");
-	        URLConnection yc = yahoo.openConnection();
-	        BufferedReader in = new BufferedReader( new InputStreamReader( yc.getInputStream()));
-	        String inputLine;
 
-	        while ((inputLine = in.readLine()) != null) ;
-	        in.close();
-	        return false;
-			}
-			catch(Exception e)
-			{
-				
-				return true;
-			}
+		try {
+			URL yahoo = new URL("http://www.google.com/");
+			URLConnection yc = yahoo.openConnection();
+			BufferedReader in = new BufferedReader( new InputStreamReader( yc.getInputStream()));
+			String inputLine;
+
+			while ((inputLine = in.readLine()) != null) ;
+			in.close();
+			return false;
+		}
+		catch(Exception e)
+		{
+
+			return true;
+		}
 	}
-	 
+
 	@BeforeMethod
 	public void beforeMethod() throws IOException {
 
-		
+
 		System.setProperty("webdriver.chrome.driver", "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\chromedriver\\chromedriver.exe");
-		
+
 
 	}
-}
-	
 
-	
+	@BeforeClass
+	public void initialisewinium() throws IOException
+	{
+		Runtime runTime = Runtime.getRuntime();
+		String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\WiniumDriver\\Winium.Desktop.Driver.exe";
+		Process process1 = runTime.exec(executablePath);
+	}
+
+	@AfterClass
+	public void teardownwinium() throws IOException
+	{
+		Runtime.getRuntime().exec("TASKKILL /F /IM Winium.Desktop.Driver.exe");
+	}
+}
+
+
+

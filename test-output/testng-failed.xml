@@ -6,7 +6,9 @@
       <class name="Firewall">
         <methods>
           <include name="beforeMethod"/>
-          <include name="IDS"/>
+          <include name="initialisewinium"/>
+          <include name="IDSRun"/>
+          <include name="teardownwinium"/>
         </methods>
       </class> <!-- Firewall -->
     </classes>

@@ -12,6 +12,8 @@ import java.util.Date;
 import org.openqa.selenium.By;
 import org.openqa.selenium.winium.DesktopOptions;
 import org.openqa.selenium.winium.WiniumDriver;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 
 
 public class NewTest{
@@ -37,5 +39,19 @@ public void new1() throws IOException, InterruptedException
 		Thread.sleep(2000);
 		driver.findElement(By.name("OK")).click();	
 }
+	@BeforeClass
+	 public void initialisewinium() throws IOException
+	 {
+		 Runtime runTime = Runtime.getRuntime();
+	        String executablePath = "C:\\Users\\Automation\\eclipse-workspace\\MTSWinium\\WiniumDriver\\Winium.Desktop.Driver.exe";
+	        Process process1 = runTime.exec(executablePath);
+	 }
+	
+	@AfterClass
+	 public void teardownwinium() throws IOException
+	 {
+		Runtime.getRuntime().exec("TASKKILL /F /IM Winium.Desktop.Driver.exe");
+	 }
 }
+
 

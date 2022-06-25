@@ -18,7 +18,6 @@ public class Log {
 			f.createNewFile();
 		}
 		
-		
 		fh = new FileHandler(filename ,true);
 		logger=Logger.getLogger("test");
 		logger.addHandler(fh);

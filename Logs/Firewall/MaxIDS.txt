@@ -1,0 +1,22 @@
+2022-06-25 14:56:41 INFO ********************************* STARTING MAX IDS TEST********************************************
+2022-06-25 14:56:53 INFO Added IP and Saved successfully
+2022-06-25 14:56:58 INFO Paused The Protection
+2022-06-25 14:57:02 INFO Copied MAXPNP.db to Temp Folder
+2022-06-25 14:57:05 INFO DB Connection Successfull
+2022-06-25 14:57:05 INFO Protection Resumed
+2022-06-25 14:57:07 INFO ----------------------------------------------------------
+2022-06-25 14:57:07 INFO #TEST-CASE NAME#:-FIREWALL MAX IDS 
+2022-06-25 14:57:07 INFO ----------------------------------------------------------
+2022-06-25 14:57:07 INFO IP Address  	192.168.1.201	 Successfully added
+2022-06-25 14:57:07 INFO #TEST CASE STATUS# :- PASSED
+2022-06-25 14:57:09 INFO ****************** STARTING MAX IDS REMOVE TEST*************************
+2022-06-25 14:57:24 INFO Paused The Protection
+2022-06-25 14:57:28 INFO Copied MAXPNP.db to Temp Folder
+2022-06-25 14:57:31 INFO DB Connection Successfull
+2022-06-25 14:57:31 INFO Protection Resumed
+2022-06-25 14:57:33 INFO ----------------------------------------------------------
+2022-06-25 14:57:33 INFO #TEST-CASE NAME#:-FIREWALL MAX IDS REMOVE 
+2022-06-25 14:57:33 INFO ----------------------------------------------------------
+2022-06-25 14:57:33 INFO IP Address  		 Removed Successfully
+2022-06-25 14:57:33 INFO #TEST CASE STATUS# :- PASSED
+2022-06-25 14:57:33 INFO ********************************* END MAX IDS TEST********************************************
